@@ -1,181 +1,257 @@
-# TSDX React w/ Storybook User Guide
-
-Congrats! You just saved yourself hours of work by bootstrapping this project with TSDX. Let’s get you oriented with what’s here and how to use it.
-
-> This TSDX setup is meant for developing React component libraries (not apps!) that can be published to NPM. If you’re looking to build a React-based app, you should use `create-react-app`, `razzle`, `nextjs`, `gatsby`, or `react-static`.
-
-> If you’re new to TypeScript and React, checkout [this handy cheatsheet](https://github.com/sw-yx/react-typescript-cheatsheet/)
-
-## Commands
-
-TSDX scaffolds your new library inside `/src`, and also sets up a [Parcel-based](https://parceljs.org) playground for it inside `/example`.
-
-The recommended workflow is to run TSDX in one terminal:
-
-```bash
-npm start # or yarn start
-```
-
-This builds to `/dist` and runs the project in watch mode so any edits you save inside `src` causes a rebuild to `/dist`.
-
-Then run either Storybook or the example playground:
-
-### Storybook
-
-Run inside another terminal:
-
-```bash
-yarn storybook
-```
-
-This loads the stories from `./stories`.
-
-> NOTE: Stories should reference the components as if using the library, similar to the example playground. This means importing from the root project directory. This has been aliased in the tsconfig and the storybook webpack config as a helper.
-
-### Example
-
-Then run the example inside another:
-
-```bash
-cd example
-npm i # or yarn to install dependencies
-npm start # or yarn start
-```
-
-The default example imports and live reloads whatever is in `/dist`, so if you are seeing an out of date component, make sure TSDX is running in watch mode like we recommend above. **No symlinking required**, we use [Parcel's aliasing](https://parceljs.org/module_resolution.html#aliases).
-
-To do a one-off build, use `npm run build` or `yarn build`.
-
-To run tests, use `npm test` or `yarn test`.
-
-## Configuration
-
-Code quality is set up for you with `prettier`, `husky`, and `lint-staged`. Adjust the respective fields in `package.json` accordingly.
-
-### Jest
-
-Jest tests are set up to run with `npm test` or `yarn test`.
-
-### Bundle analysis
-
-Calculates the real cost of your library using [size-limit](https://github.com/ai/size-limit) with `npm run size` and visulize it with `npm run analyze`.
-
-#### Setup Files
-
-This is the folder structure we set up for you:
-
-```txt
-/example
-  index.html
-  index.tsx       # test your component here in a demo app
-  package.json
-  tsconfig.json
-/src
-  index.tsx       # EDIT THIS
-/test
-  blah.test.tsx   # EDIT THIS
-/stories
-  Thing.stories.tsx # EDIT THIS
-/.storybook
-  main.js
-  preview.js
-.gitignore
-package.json
-README.md         # EDIT THIS
-tsconfig.json
-```
-
-#### React Testing Library
-
-We do not set up `react-testing-library` for you yet, we welcome contributions and documentation on this.
-
-### Rollup
-
-TSDX uses [Rollup](https://rollupjs.org) as a bundler and generates multiple rollup configs for various module formats and build settings. See [Optimizations](#optimizations) for details.
-
-### TypeScript
-
-`tsconfig.json` is set up to interpret `dom` and `esnext` types, as well as `react` for `jsx`. Adjust according to your needs.
-
-## Continuous Integration
-
-### GitHub Actions
-
-Two actions are added by default:
-
-- `main` which installs deps w/ cache, lints, tests, and builds on all pushes against a Node and OS matrix
-- `size` which comments cost comparison of your library on every pull request using [size-limit](https://github.com/ai/size-limit)
-
-## Optimizations
-
-Please see the main `tsdx` [optimizations docs](https://github.com/palmerhq/tsdx#optimizations). In particular, know that you can take advantage of development-only optimizations:
-
-```js
-// ./types/index.d.ts
-declare var __DEV__: boolean;
-
-// inside your code...
-if (__DEV__) {
-  console.log('foo');
-}
-```
-
-You can also choose to install and use [invariant](https://github.com/palmerhq/tsdx#invariant) and [warning](https://github.com/palmerhq/tsdx#warning) functions.
-
-## Module Formats
-
-CJS, ESModules, and UMD module formats are supported.
-
-The appropriate paths are configured in `package.json` and `dist/index.js` accordingly. Please report if any issues are found.
-
-## Deploying the Example Playground
-
-The Playground is just a simple [Parcel](https://parceljs.org) app, you can deploy it anywhere you would normally deploy that. Here are some guidelines for **manually** deploying with the Netlify CLI (`npm i -g netlify-cli`):
-
-```bash
-cd example # if not already in the example folder
-npm run build # builds to dist
-netlify deploy # deploy the dist folder
-```
-
-Alternatively, if you already have a git repo connected, you can set up continuous deployment with Netlify:
-
-```bash
-netlify init
-# build command: yarn build && cd example && yarn && yarn build
-# directory to deploy: example/dist
-# pick yes for netlify.toml
-```
-
-## Named Exports
-
-Per Palmer Group guidelines, [always use named exports.](https://github.com/palmerhq/typescript#exports) Code split inside your React app instead of your React library.
-
-## Including Styles
-
-There are many ways to ship styles, including with CSS-in-JS. TSDX has no opinion on this, configure how you like.
-
-For vanilla CSS, you can include it at the root directory and add it to the `files` section in your `package.json`, so that it can be imported separately by your users and run through their bundler's loader.
-
-## Publishing to NPM
-
-We recommend using [np](https://github.com/sindresorhus/np).
-
-## Usage with Lerna
-
-When creating a new package with TSDX within a project set up with Lerna, you might encounter a `Cannot resolve dependency` error when trying to run the `example` project. To fix that you will need to make changes to the `package.json` file _inside the `example` directory_.
-
-The problem is that due to the nature of how dependencies are installed in Lerna projects, the aliases in the example project's `package.json` might not point to the right place, as those dependencies might have been installed in the root of your Lerna project.
-
-Change the `alias` to point to where those packages are actually installed. This depends on the directory structure of your Lerna project, so the actual path might be different from the diff below.
-
-```diff
-   "alias": {
--    "react": "../node_modules/react",
--    "react-dom": "../node_modules/react-dom"
-+    "react": "../../../node_modules/react",
-+    "react-dom": "../../../node_modules/react-dom"
-   },
-```
-
-An alternative to fixing this problem would be to remove aliases altogether and define the dependencies referenced as aliases as dev dependencies instead. [However, that might cause other problems.](https://github.com/palmerhq/tsdx/issues/64)
+# React-Framify
+
+React-Framify is a lightweight and versatile React component library that provides device framesets for showcasing screenshots and images. This library offers an updated and optimized version of the popular reac-device-frameset, with enhanced features and compatibility.
+
+## Features
+- Supports the iPhone 14 Pro frameset.
+- Enables easy navigation between multiple screenshots or images.
+- Provides touch swipe gestures for seamless image browsing.
+- Optimized for performance and smooth animations.
+- Compatible with both ReactJS and ReactTS.
+
+## Installation
+To use React Device Frameset in your React project, follow these steps:
+
+1. Manually copy the required files into your project directory.
+   - For JavaScript (JS) projects:
+     ```jsx
+     import React, { useEffect, useState } from 'react';
+      import PhoneFrameset from '../assets/iphone-14-pro.png';
+
+      const PhoneFrame = ({ screenshotList }) => {
+        const [currentImageIndex, setCurrentImageIndex] = useState(0);
+        const [initialTouchPosition, setInitialTouchPosition] = useState(null);
+        const [fadeOut, setFadeOut] = useState(false);
+
+        useEffect(() => {
+          setCurrentImageIndex(0); // Reset the current image index when screenshotList changes
+        }, [screenshotList]);
+
+        const handleTouchStart = (e) => {
+          const touch = e.touches[0];
+          setInitialTouchPosition(touch.clientX);
+        };
+
+        const handleTouchMove = (e) => {
+          if (!initialTouchPosition) return;
+
+          const touch = e.touches[0];
+          const currentTouchPosition = touch.clientX;
+          const touchDistance = currentTouchPosition - initialTouchPosition;
+
+          if (touchDistance > 50) {
+            // Swipe right, show previous image
+            showPreviousImage();
+          } else if (touchDistance < -50) {
+            // Swipe left, show next image
+            showNextImage();
+          }
+        };
+
+        const handleTouchEnd = () => {
+          setInitialTouchPosition(null);
+        };
+
+        const showPreviousImage = () => {
+          setFadeOut(true);
+          setTimeout(() => {
+            setCurrentImageIndex((prevIndex) =>
+              prevIndex === 0 ? screenshotList.length - 1 : prevIndex - 1
+            );
+            setFadeOut(false);
+          }, 300);
+        };
+
+        const showNextImage = () => {
+          setFadeOut(true);
+          setTimeout(() => {
+            setCurrentImageIndex((prevIndex) =>
+              prevIndex === screenshotList.length - 1 ? 0 : prevIndex + 1
+            );
+            setFadeOut(false);
+          }, 300);
+        };
+
+        return (
+          <figure
+            className="phone__frameset--wrapper preview__phone--mockup"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
+            <img src={PhoneFrameset} alt="Image by svstudioart on Freepik" className="phone__frameset" />
+            <img
+              src={screenshotList[currentImageIndex]}
+              alt=""
+              className={`phone__frameset--img ${fadeOut ? 'fade-out' : ''}`}
+            />
+            <div className="preview__scroll--btns">
+              <button className="preview__scroll--btn btn" onClick={showPreviousImage}>Previous</button>
+              <button className="preview__scroll--btn btn" onClick={showNextImage}>Next</button>
+            </div>
+          </figure>
+        );
+      };
+
+      export default PhoneFrame;
+     ```
+     - Copy the `PhoneFrame.css` file into your project's CSS directory from the `./src/PhoneFrame.css`.
+   - For TypeScript (TS) projects:
+     ```tsx
+      import React, { useEffect, useState } from 'react';
+      import '../dist/PhoneFrame.css';
+
+      // Declare the image variable
+      const PhoneFrameset: any = require('../assets/iphone-14-pro.png');
+
+
+      export interface PhoneFrameProps {
+        screenshotList: string[]; // Array of strings representing image file names
+      }
+
+      const PhoneFrame: React.FC<PhoneFrameProps> = ({ screenshotList }) => {
+        const [currentImageIndex, setCurrentImageIndex] = useState(0);
+        const [initialTouchPosition, setInitialTouchPosition] = useState<number | null>(null); // Add type annotation
+        const [fadeOut, setFadeOut] = useState(false);
+
+        useEffect(() => {
+          setCurrentImageIndex(0); // Reset the current image index when screenshotList changes
+        }, [screenshotList]);
+
+        useEffect(() => {
+          setCurrentImageIndex(0); // Reset the current image index when screenshotList changes
+        }, [screenshotList]);
+
+        const handleTouchStart = (e: React.TouchEvent) => {
+          const touch = e.touches[0];
+          setInitialTouchPosition(touch.clientX);
+        };
+
+        const handleTouchMove = (e: React.TouchEvent) => {
+          if (!initialTouchPosition) return;
+
+          const touch = e.touches[0];
+          const currentTouchPosition = touch.clientX;
+          const touchDistance = currentTouchPosition - initialTouchPosition;
+
+          if (touchDistance > 50) {
+            // Swipe right, show previous image
+            showPreviousImage();
+          } else if (touchDistance < -50) {
+            // Swipe left, show next image
+            showNextImage();
+          }
+        };
+
+        const handleTouchEnd = () => {
+          setInitialTouchPosition(null);
+        };
+
+        const showPreviousImage = () => {
+          setFadeOut(true);
+          setTimeout(() => {
+            setCurrentImageIndex((prevIndex) =>
+              prevIndex === 0 ? screenshotList.length - 1 : prevIndex - 1
+            );
+            setFadeOut(false);
+          }, 300);
+        };
+
+        const showNextImage = () => {
+          setFadeOut(true);
+          setTimeout(() => {
+            setCurrentImageIndex((prevIndex) =>
+              prevIndex === screenshotList.length - 1 ? 0 : prevIndex + 1
+            );
+            setFadeOut(false);
+          }, 300);
+        };
+
+        return (
+          <figure
+            className="phone__frameset--wrapper preview__phone--mockup"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
+            <img src={PhoneFrameset} alt="Image by svstudioart on Freepik" className="phone__frameset" />
+            <img
+              src={screenshotList[currentImageIndex]}
+              alt=""
+              className={`phone__frameset--img ${fadeOut ? 'fade-out' : ''}`}
+            />
+            <div className="preview__scroll--btns">
+              <button className="preview__scroll--btn btn" onClick={showPreviousImage}>Previous</button>
+              <button className="preview__scroll--btn btn" onClick={showNextImage}>Next</button>
+            </div>
+          </figure>
+        );
+      };
+
+      export default PhoneFrame;
+     ```
+     - Copy the `PhoneFrame.css` file into your project's CSS directory from the `./src/PhoneFrame.css`.
+
+2. Import the `PhoneFrame` component in your app.
+   - For JavaScript (JS) projects:
+     ```jsx
+     import React from 'react';
+     import PhoneFrame from './components/PhoneFrame';
+     import screenshot1 from './assets/screenshot1.png';
+     import screenshot2 from './assets/screenshot2.png';
+
+     const App = () => {
+       const screenshotList = [screenshot1, screenshot2];
+
+       return (
+         <div>
+           <PhoneFrame screenshotList={screenshotList} />
+           {/* Rest of your app code */}
+         </div>
+       );
+     };
+
+     export default App;
+     ```
+
+   - For TypeScript (TS) projects:
+     ```tsx
+     import React from 'react';
+     import PhoneFrame, { PhoneFrameProps } from './components/PhoneFrame';
+     import screenshot1 from './assets/screenshot1.png';
+     import screenshot2 from './assets/screenshot2.png';
+
+     const App: React.FC = () => {
+       const screenshotList: string[] = [screenshot1, screenshot2];
+
+       return (
+         <div>
+           <PhoneFrame screenshotList={screenshotList} />
+           {/* Rest of your app code */}
+         </div>
+       );
+     };
+
+     export default App;
+     ```
+
+3. Ensure that the necessary CSS file is imported in your project.
+   - For JavaScript (JS) projects:
+     ```jsx
+     import './css/PhoneFrame.css';
+     ```
+
+   - For TypeScript (TS) projects:
+     ```tsx
+     import '../dist/PhoneFrame.css';
+     ```
+
+4. Run your React application and enjoy using the React Device Frameset!
+
+## Usage
+The `PhoneFrame` component is the main component of the React Device Frameset library. It accepts the following props:
+- `screenshotList` (array of strings): An array of image file paths or URLs representing the screenshots or images to be displayed within the frameset.
+
+Here's an example of using the `PhoneFrame` component with screenshots:
+```jsx
+<PhoneFrame screenshotList={screenshotList} />

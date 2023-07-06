@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-// import PhoneFrameset from '../assets/iphone-14-pro.png';
 import '../dist/PhoneFrame.css';
 
 // Declare the image variable
