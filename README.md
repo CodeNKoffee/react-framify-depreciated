@@ -96,6 +96,9 @@ To use React Device Frameset in your React project, follow these steps:
       export default PhoneFrame;
      ```
      - Copy the `PhoneFrame.css` file into your project's CSS directory from the `./src/PhoneFrame.css`.
+     <br />
+     <br />
+     <br />
    - For TypeScript (TS) projects:
      ```tsx
       import React, { useEffect, useState } from 'react';
@@ -191,7 +194,9 @@ To use React Device Frameset in your React project, follow these steps:
       export default PhoneFrame;
      ```
      - Copy the `PhoneFrame.css` file into your project's CSS directory from the `./src/PhoneFrame.css`.
-
+      <br />
+      <br />
+      <br />
 2. Import the `PhoneFrame` component in your app.
    - For JavaScript (JS) projects:
      ```jsx
