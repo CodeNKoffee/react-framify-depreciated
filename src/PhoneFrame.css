@@ -48,10 +48,10 @@
 .preview__scroll--btn {
   border-radius: 16px;
   border: none;
-  background-color: var(--ecaller-green);
-  color: var(--ecaller-white);
+  background-color: #004F98;
+  color: #FFF;
   font-size: 16px;
-  font-family: 'Sarala', sans-serif;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
   font-weight: 700;
   padding: 8px 16px;
   display: flex;
@@ -60,7 +60,7 @@
 }
 
 .preview__scroll--btn:hover {
-  color: var(--ecaller-white);
+  color: #FFF;
   transform: scale(1.08);
 }
 
